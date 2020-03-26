@@ -91,18 +91,19 @@ function processMessage(message, rule, config) {
     }
     try {
       var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
-      var file = folder.createFile(attachment);
-      var filename = file.getName();
-      if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
+      //var file = folder.createFile(attachment);
+      var filename = attachment.getName();
+      if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == filename) {
         filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + filename + "'");
-        file.setName(filename);
+        Logger.log("INFO:           Renaming matched file '" + filename + "' -> '" + filename + "'");
+        attachment.setName(filename);
       }
       else if (rule.filenameTo) {
         filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + filename + "'");
-        file.setName(filename);
+        Logger.log("INFO:           Renaming '" + filename + "' -> '" + filename + "'");
+        attachment.setName(filename);
       }
+      folder.createFile(attachment);
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       Utilities.sleep(config.sleepTime);
     } catch (e) {
